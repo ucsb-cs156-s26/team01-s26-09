@@ -117,7 +117,7 @@ public class HelpRequestControllerTests extends ControllerTestCase {
             .tableOrBreakoutRoom("7")
             .requestTime(ldt1)
             .explanation("Need help with Swagger-ui")
-            .solved(false)
+            .solved(true)
             .build();
 
     when(helpRequestRepository.save(eq(helpRequest1))).thenReturn(helpRequest1);
@@ -126,7 +126,7 @@ public class HelpRequestControllerTests extends ControllerTestCase {
     MvcResult response =
         mockMvc
             .perform(
-                post("/api/helprequests/post?requesterEmail=cgaucho@ucsb.edu&teamId=s22-5pm-3&tableOrBreakoutRoom=7&requestTime=2022-04-20T17:35:00&explanation=Need help with Swagger-ui&solved=false")
+                post("/api/helprequests/post?requesterEmail=cgaucho@ucsb.edu&teamId=s22-5pm-3&tableOrBreakoutRoom=7&requestTime=2022-04-20T17:35:00&explanation=Need help with Swagger-ui&solved=true")
                     .with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
