@@ -132,7 +132,7 @@ public class RecommendationRequestControllerTests extends ControllerTestCase {
             .explanation("BS/MS program")
             .dateRequested(dr)
             .dateNeeded(dn)
-            .done(false)
+            .done(true)
             .build();
 
     when(recommendationRequestRepository.save(eq(rr))).thenReturn(rr);
@@ -146,7 +146,7 @@ public class RecommendationRequestControllerTests extends ControllerTestCase {
                     .param("explanation", "BS/MS program")
                     .param("dateRequested", "2022-04-20T00:00:00")
                     .param("dateNeeded", "2022-05-01T00:00:00")
-                    .param("done", "false")
+                    .param("done", "true")
                     .with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
