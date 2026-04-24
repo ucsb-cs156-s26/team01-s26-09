@@ -72,7 +72,7 @@
                 {
                   "column": {
                     "name": "COMMENTS",
-                    "type": "TEXT",
+                    "type": "VARCHAR(255)",
                     "constraints": {
                       "nullable": true
                     }
