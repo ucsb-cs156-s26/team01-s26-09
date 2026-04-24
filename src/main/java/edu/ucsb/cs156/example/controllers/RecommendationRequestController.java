@@ -2,6 +2,7 @@ package edu.ucsb.cs156.example.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import edu.ucsb.cs156.example.entities.RecommendationRequest;
+import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.RecommendationRequestRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,15 @@ public class RecommendationRequestController extends ApiController {
   @GetMapping("/all")
   public Iterable<RecommendationRequest> allRecommendationRequests() {
     return recommendationRequestRepository.findAll();
+  }
+
+  @Operation(summary = "Get a single recommendation request")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @GetMapping("")
+  public RecommendationRequest getById(@Parameter(name = "id") @RequestParam Long id) {
+    return recommendationRequestRepository
+        .findById(id)
+        .orElseThrow(() -> new EntityNotFoundException(RecommendationRequest.class, id));
   }
 
   @Operation(summary = "Create a new recommendation request")
