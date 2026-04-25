@@ -7,11 +7,14 @@ import edu.ucsb.cs156.example.repositories.UCSBDiningCommonsMenuItemRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,5 +88,33 @@ public class UCSBDiningCommonsMenuItemsController extends ApiController {
         ucsbDiningCommonsMenuItemRepository.save(ucsbMenuItem);
 
     return savedUcsbMenuItem;
+  }
+
+  /**
+   * Update a single UCSB Dining Commons Menu Item
+   *
+   * @param id id of the UCSB Dining Commons Menu Item to update
+   * @param incoming the new UCSB Dining Commons Menu Item
+   * @return the updated UCSB Dining Commons Menu Item
+   */
+  @Operation(summary = "Update a single UCSB Dining Commons Menu Item")
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PutMapping("")
+  public UCSBDiningCommonsMenuItem updateUCSBDiningCommonsMenuItem(
+      @Parameter(name = "id") @RequestParam Long id,
+      @RequestBody @Valid UCSBDiningCommonsMenuItem incoming) {
+
+    UCSBDiningCommonsMenuItem ucsbMenuItem =
+        ucsbDiningCommonsMenuItemRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(UCSBDiningCommonsMenuItem.class, id));
+
+    ucsbMenuItem.setDiningCommonsCode(incoming.getDiningCommonsCode());
+    ucsbMenuItem.setName(incoming.getName());
+    ucsbMenuItem.setStation(incoming.getStation());
+
+    ucsbDiningCommonsMenuItemRepository.save(ucsbMenuItem);
+
+    return ucsbMenuItem;
   }
 }
