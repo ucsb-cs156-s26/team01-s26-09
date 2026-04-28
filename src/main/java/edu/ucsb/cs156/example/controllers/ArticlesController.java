@@ -1,6 +1,7 @@
 package edu.ucsb.cs156.example.controllers;
 
 import edu.ucsb.cs156.example.entities.Articles;
+import edu.ucsb.cs156.example.errors.EntityNotFoundException;
 import edu.ucsb.cs156.example.repositories.ArticlesRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,6 +39,26 @@ public class ArticlesController extends ApiController {
   }
 
   /**
+   * Get a single article by id.
+   *
+   * @param id id of the article to get
+   * @return the requested article
+   */
+  @Operation(summary = "Get a single article")
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @GetMapping("")
+  public Articles getById(
+      @Parameter(name = "id", description = "ID of the article to retrieve") @RequestParam
+          Long id) {
+    Articles article =
+        articlesRepository
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(Articles.class, id));
+
+    return article;
+  }
+
+  /**
    * Create a new article.
    *
    * @param title article title
@@ -58,7 +79,8 @@ public class ArticlesController extends ApiController {
       @Parameter(
               name = "dateAdded",
               description =
-                  "timestamp in ISO format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601")
+                  "timestamp in ISO format, e.g. YYYY-mm-ddTHH:MM:SS; see"
+                      + " https://en.wikipedia.org/wiki/ISO_8601")
           @RequestParam("dateAdded")
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           LocalDateTime dateAdded) {
