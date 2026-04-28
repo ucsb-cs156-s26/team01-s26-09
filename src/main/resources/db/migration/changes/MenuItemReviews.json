@@ -1,0 +1,89 @@
+{
+  "databaseChangeLog": [
+    {
+      "changeSet": {
+        "id": "MenuItemReviews-1",
+        "author": "cooperdalton",
+        "preConditions": [
+          {
+            "onFail": "MARK_RAN"
+          },
+          {
+            "not": [
+              {
+                "tableExists": {
+                  "tableName": "MENUITEMREVIEWS"
+                }
+              }
+            ]
+          }
+        ],
+        "changes": [
+          {
+            "createTable": {
+              "columns": [
+                {
+                  "column": {
+                    "autoIncrement": true,
+                    "constraints": {
+                      "primaryKey": true,
+                      "primaryKeyName": "MENUITEMREVIEWS_PK"
+                    },
+                    "name": "ID",
+                    "type": "BIGINT"
+                  }
+                },
+                {
+                  "column": {
+                    "name": "ITEM_ID",
+                    "type": "BIGINT",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "REVIEWER_EMAIL",
+                    "type": "VARCHAR(255)",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "STARS",
+                    "type": "INT",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "DATE_REVIEWED",
+                    "type": "TIMESTAMP",
+                    "constraints": {
+                      "nullable": false
+                    }
+                  }
+                },
+                {
+                  "column": {
+                    "name": "COMMENTS",
+                    "type": "VARCHAR(255)",
+                    "constraints": {
+                      "nullable": true
+                    }
+                  }
+                }
+              ],
+              "tableName": "MENUITEMREVIEWS"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
