@@ -89,8 +89,7 @@ public class ArticlesControllerTests extends ControllerTestCase {
 
   @WithMockUser(roles = {"USER"})
   @Test
-  public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist()
-      throws Exception {
+  public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
     when(articlesRepository.findById(eq(7L))).thenReturn(Optional.empty());
 
     MvcResult response =

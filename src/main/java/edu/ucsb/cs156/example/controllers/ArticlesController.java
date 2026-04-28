@@ -48,7 +48,8 @@ public class ArticlesController extends ApiController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @GetMapping("")
   public Articles getById(
-      @Parameter(name = "id", description = "ID of the article to retrieve") @RequestParam Long id) {
+      @Parameter(name = "id", description = "ID of the article to retrieve") @RequestParam
+          Long id) {
     Articles article =
         articlesRepository
             .findById(id)
@@ -78,7 +79,8 @@ public class ArticlesController extends ApiController {
       @Parameter(
               name = "dateAdded",
               description =
-                  "timestamp in ISO format, e.g. YYYY-mm-ddTHH:MM:SS; see https://en.wikipedia.org/wiki/ISO_8601")
+                  "timestamp in ISO format, e.g. YYYY-mm-ddTHH:MM:SS; see"
+                      + " https://en.wikipedia.org/wiki/ISO_8601")
           @RequestParam("dateAdded")
           @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
           LocalDateTime dateAdded) {
