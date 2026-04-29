@@ -69,17 +69,17 @@ public class UCSBOrganizationsController extends ApiController {
   }
 
   /**
-   * Update a single diningcommons. Accessible only to users with the role "ROLE_ADMIN".
+   * Update a single organization. Accessible only to users with the role "ROLE_ADMIN".
    *
-   * @param code code of the diningcommons
-   * @param incoming the new commons contents
-   * @return the updated commons object
+   * @param orgCode code of the organization
+   * @param incoming the new organization contents
+   * @return the updated organization object
    */
   @Operation(summary = "Update a single organization")
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("")
   public UCSBOrganization updateOrganization(
-      @Parameter(name = "code") @RequestParam String orgCode,
+      @Parameter(name = "orgCode") @RequestParam String orgCode,
       @RequestBody @Valid UCSBOrganization incoming) {
 
     UCSBOrganization organization =
