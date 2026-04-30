@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s26/team01-s26-09
 owner: ucsb-cs156-s26
 repo_name: team01-s26-09
-pull_requests: []
+pull_requests: [{"author":{"id":"U_kgDOCT3Mvw","is_bot":false,"login":"ryanlongacre","name":""},"headRefName":"rl-UCSBOrganization-create-put","number":76,"title":"rl - fixed bug where delete and get got removed","url":"https://github.com/ucsb-cs156-s26/team01-s26-09/pull/76"}]
