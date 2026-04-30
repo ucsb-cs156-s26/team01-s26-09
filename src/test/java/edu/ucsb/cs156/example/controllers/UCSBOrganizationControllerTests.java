@@ -1,7 +1,6 @@
 package edu.ucsb.cs156.example.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MvcResult;
@@ -149,68 +149,11 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
     assertEquals(expectedJson, responseString);
   }
 
-  // Tests for GET /api/ucsborganizations (get by id)
-
-  @Test
-  public void logged_out_users_cannot_get_by_id() throws Exception {
-    mockMvc.perform(get("/api/ucsborganizations").param("code", "ZPR")).andExpect(status().is(403));
-  }
-
-  @WithMockUser(roles = {"USER"})
-  @Test
-  public void test_that_logged_in_user_can_get_by_id_when_the_id_exists() throws Exception {
-
-    // arrange
-    UCSBOrganization zpr =
-        UCSBOrganization.builder()
-            .orgCode("ZPR")
-            .orgTranslationShort("ZETA PHI RHO")
-            .orgTranslation("ZETA PHI RHO")
-            .inactive(false)
-            .build();
-
-    when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.of(zpr));
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(get("/api/ucsborganizations").param("code", "ZPR"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    // assert
-    verify(ucsbOrganizationRepository, times(1)).findById(eq("ZPR"));
-    String expectedJson = mapper.writeValueAsString(zpr);
-    String responseString = response.getResponse().getContentAsString();
-    assertEquals(expectedJson, responseString);
-  }
-
-  @WithMockUser(roles = {"USER"})
-  @Test
-  public void test_that_logged_in_user_can_get_by_id_when_the_id_does_not_exist() throws Exception {
-
-    // arrange
-    when(ucsbOrganizationRepository.findById(eq("FAKE"))).thenReturn(Optional.empty());
-
-    // act
-    MvcResult response =
-        mockMvc
-            .perform(get("/api/ucsborganizations").param("code", "FAKE"))
-            .andExpect(status().isNotFound())
-            .andReturn();
-
-    // assert
-    verify(ucsbOrganizationRepository, times(1)).findById(eq("FAKE"));
-    Map<String, Object> json = responseToJson(response);
-    assertEquals("EntityNotFoundException", json.get("type"));
-    assertEquals("UCSBOrganization with id FAKE not found", json.get("message"));
-  }
-
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
-  public void admin_can_delete_an_organization() throws Exception {
+  public void admin_can_edit_an_existing_organization() throws Exception {
     // arrange
-    UCSBOrganization zpr =
+    UCSBOrganization zprOrig =
         UCSBOrganization.builder()
             .orgCode("ZPR")
             .orgTranslationShort("ZETA PHI RHO")
@@ -218,33 +161,64 @@ public class UCSBOrganizationControllerTests extends ControllerTestCase {
             .inactive(false)
             .build();
 
-    when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.of(zpr));
+    UCSBOrganization zprEdited =
+        UCSBOrganization.builder()
+            .orgCode("ZPR2")
+            .orgTranslationShort("ZPR SHORT")
+            .orgTranslation("ZETA PHI RHO EDITED")
+            .inactive(true)
+            .build();
+
+    String requestBody = mapper.writeValueAsString(zprEdited);
+
+    when(ucsbOrganizationRepository.findById(eq("ZPR"))).thenReturn(Optional.of(zprOrig));
 
     // act
     MvcResult response =
         mockMvc
-            .perform(delete("/api/ucsborganizations").param("orgCode", "ZPR").with(csrf()))
+            .perform(
+                put("/api/ucsborganizations")
+                    .param("orgCode", "ZPR")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
             .andExpect(status().isOk())
             .andReturn();
 
     // assert
     verify(ucsbOrganizationRepository, times(1)).findById("ZPR");
-    verify(ucsbOrganizationRepository, times(1)).delete(any());
-    Map<String, Object> json = responseToJson(response);
-    assertEquals("UCSBOrganization with id ZPR deleted", json.get("message"));
+    verify(ucsbOrganizationRepository, times(1)).save(zprEdited);
+    String responseString = response.getResponse().getContentAsString();
+    assertEquals(requestBody, responseString);
   }
 
   @WithMockUser(roles = {"ADMIN", "USER"})
   @Test
-  public void admin_tries_to_delete_nonexistent_organization_and_gets_right_error_message()
-      throws Exception {
+  public void admin_cannot_edit_organization_that_does_not_exist() throws Exception {
     // arrange
+    UCSBOrganization editedOrg =
+        UCSBOrganization.builder()
+            .orgCode("FAKE")
+            .orgTranslationShort("FAKE SHORT")
+            .orgTranslation("FAKE TRANSLATION")
+            .inactive(false)
+            .build();
+
+    String requestBody = mapper.writeValueAsString(editedOrg);
+
     when(ucsbOrganizationRepository.findById(eq("FAKE"))).thenReturn(Optional.empty());
 
     // act
     MvcResult response =
         mockMvc
-            .perform(delete("/api/ucsborganizations").param("orgCode", "FAKE").with(csrf()))
+            .perform(
+                put("/api/ucsborganizations")
+                    .param("orgCode", "FAKE")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .characterEncoding("utf-8")
+                    .content(requestBody)
+                    .with(csrf()))
             .andExpect(status().isNotFound())
             .andReturn();
 
