@@ -23,4 +23,4 @@ repo_name: "TBD"
 repo: ucsb-cs156-s26/team01-s26-09
 owner: ucsb-cs156-s26
 repo_name: team01-s26-09
-pull_requests: [{"author":{"id":"U_kgDOCT3Mvw","is_bot":false,"login":"ryanlongacre","name":""},"headRefName":"rl-UCSBOrganization-create-delete","number":74,"title":"rl - added delete method and tests for it","url":"https://github.com/ucsb-cs156-s26/team01-s26-09/pull/74"},{"author":{"id":"U_kgDOCT3Mvw","is_bot":false,"login":"ryanlongacre","name":""},"headRefName":"rl-UCSBOrganization-create-get","number":73,"title":"rl - added get methods along with tests for UCSBOrganizations","url":"https://github.com/ucsb-cs156-s26/team01-s26-09/pull/73"}]
+pull_requests: [{"author":{"id":"U_kgDOCT3Mvw","is_bot":false,"login":"ryanlongacre","name":""},"headRefName":"rl-UCSBOrganization-create-get","number":73,"title":"rl - added get methods along with tests for UCSBOrganizations","url":"https://github.com/ucsb-cs156-s26/team01-s26-09/pull/73"}]
